@@ -25,12 +25,12 @@ function Get-DgEXOMailboxPermission {
     #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true)][ValidateScript ({ Get-EXOMailbox -Identity $_ })][string]$User,
+        [Parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true)][string]$User,
         [Parameter()][ValidateRange(2,20)][int]$ThrottleLimit = 5
     )
     
     begin {
-        Get-ConnectionInformation | Out-Null
+        Get-DgConnectionInformation | Out-Null
     }
     
     process {

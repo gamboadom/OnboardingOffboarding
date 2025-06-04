@@ -69,7 +69,7 @@ function Get-DgEmployeeServices {
             ForEach-Object { $Ht.MS365License += @($_.SkuPartNumber) } 
     
             # Check membership to distribution groups
-            Get-DgDistributionGroup -Member $ADUser.SamAccountName | 
+            Get-DgDistributionGroup -Member $ADUser.UserPrincipalName | 
             ForEach-Object { $Ht.Group += @($_.DisplayName)} 
             
             # Check entra group memberships

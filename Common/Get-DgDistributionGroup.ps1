@@ -14,21 +14,29 @@ function Get-DgDistributionGroup {
     #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)][ValidateScript({ Get-EXOMailbox -Identity $_ })][string]$Member
+        [Parameter(Mandatory)][string]$Member
     )
     begin {
         Get-DgConnectionInformation | Out-Null
     } 
     process {
-        # Get the member's distinguished name        
-        $MemberDN = (Get-EXOMailbox -Identity $Member).DistinguishedName      
         try {
-            # Get the distribution groups for the member
-            Get-DistributionGroup -ResultSize Unlimited -Filter "Members -like '$MemberDN'" -ErrorAction Stop    
+            # Check if the member is a valid identity
+            $verifyMember = Get-EXOMailbox -Identity $Member -ErrorAction Stop
+            # Get the member's distinguished name        
+            $MemberDN = $verifyMember.DistinguishedName 
+            try {
+                # Get the distribution groups for the member
+                Get-DistributionGroup -ResultSize Unlimited -Filter "Members -eq '$MemberDN'" -ErrorAction Stop    
+            }
+            catch {
+                # Handle errors if the command fails
+                Write-Error "Failed to get distribution groups for member '$Member'. Error: $($_.Exception.Message)"
+            }
         }
         catch {
-            # Handle errors if the command fails
-            Write-Error "Failed to get distribution groups for member '$Member'. Error: $($_.Exception.Message)"
-        }
+            Write-Error "Member '$Member' not found. Please check the member identity and try again."
+        }             
+        
     }
 }
