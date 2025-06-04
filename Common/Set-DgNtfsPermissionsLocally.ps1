@@ -1,4 +1,4 @@
-function Set-NtfsPermissions { # Function name changed here
+function Set-DgNtfsPermissionsLocally { # Function name changed here
     <#
     .SYNOPSIS
         Adds or removes ACLs for a specified path with improved validation, safety, and identity resolution.
@@ -50,27 +50,27 @@ function Set-NtfsPermissions { # Function name changed here
         This parameter is mandatory when using the 'RemoveRule' parameter set.
     .EXAMPLE
         # Add an allow rule for a domain group with Modify permissions on a folder, inheriting to children
-        Set-NtfsPermissions -Path "\\fileserver\Share1\Folder" -Identity "YOURDOMAIN\DomainUsers" -Rights "Modify" `
+        Set-DgNtfsPermissionsLocally -Path "\\fileserver\Share1\Folder" -Identity "YOURDOMAIN\DomainUsers" -Rights "Modify" `
             -Inheritance "ContainerInherit, ObjectInherit" -Propagation "None" -Type "Allow" -Add
 
     .EXAMPLE
         # Add an allow rule using just a SamAccountName, which will be resolved from existing ACLs if present
         # Assuming 'johndoe' is already present in some ACL entry on 'C:\Temp\MyFolder' as 'YOURDOMAIN\johndoe'
-        Set-NtfsPermissions -Path "C:\Temp\MyFolder" -Identity "johndoe" -Rights "ReadAndExecute" -Add
+        Set-DgNtfsPermissionsLocally -Path "C:\Temp\MyFolder" -Identity "johndoe" -Rights "ReadAndExecute" -Add
 
     .EXAMPLE
         # Remove the previously added allow rule (all parameters must match exactly)
-        Set-NtfsPermissions -Path "\\fileserver\Share1\Folder" -Identity "YOURDOMAIN\DomainUsers" -Rights "Modify" `
+        Set-DgNtfsPermissionsLocally -Path "\\fileserver\Share1\Folder" -Identity "YOURDOMAIN\DomainUsers" -Rights "Modify" `
             -Inheritance "ContainerInherit, ObjectInherit" -Propagation "None" -Type "Allow" -Remove
 
     .EXAMPLE
         # Remove an ACL rule using just a SamAccountName, which will be resolved from existing ACLs
         # This will now correctly find and remove ALKHAIRDUBAI\mawad if 'mawad' is passed as Identity
-        Set-NtfsPermissions -Path "\\filesrv\DGamboa" -Identity "mawad" -Rights "FullControl" -Remove
+        Set-DgNtfsPermissionsLocally -Path "\\filesrv\DGamboa" -Identity "mawad" -Rights "FullControl" -Remove
 
     .EXAMPLE
         # Add FullControl to a local user on a file
-        Set-NtfsPermissions -Path "C:\Temp\MyFile.txt" -Identity "LocalUser" -Rights "FullControl" `
+        Set-DgNtfsPermissionsLocally -Path "C:\Temp\MyFile.txt" -Identity "LocalUser" -Rights "FullControl" `
             -Inheritance "None" -Propagation "None" -Type "Allow" -Add
 
     .EXAMPLE
@@ -79,7 +79,7 @@ function Set-NtfsPermissions { # Function name changed here
         # If not, you might need to manually specify -Rights, -Inheritance, -Propagation, -Type.
         # The pipeline only provides -Path and -Identity here.
         Get-ChildItem -Path "C:\Share\Users" -Directory | ForEach-Object {
-            Set-NtfsPermissions -Path $_.FullName -Identity "SomeUser" -Rights "ReadAndExecute" `
+            Set-DgNtfsPermissionsLocally -Path $_.FullName -Identity "SomeUser" -Rights "ReadAndExecute" `
                 -Inheritance "ContainerInherit, ObjectInherit" -Propagation "None" -Type "Allow" -Remove
         }
     #>
