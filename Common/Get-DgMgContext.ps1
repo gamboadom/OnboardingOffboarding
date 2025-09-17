@@ -15,7 +15,7 @@ function Get-DgMgContext {
                 Write-Warning "No active Microsoft Graph connection found. Connecting now."
             }
             try {
-                Connect-MgGraph -Scopes User.ReadWrite.All, Group.ReadWrite.All, Organization.Read.All -NoWelcome -ErrorAction Stop
+                Connect-MgGraph -Scopes User.ReadWrite.All, Group.ReadWrite.All, Organization.Read.All, AuditLog.Read.All -NoWelcome -ErrorAction Stop
                 $MgContext = Get-MgContext
                 if (-not $MgContext) {
                     # $isConnected = $false
